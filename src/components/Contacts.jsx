@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, {useState} from 'react';
 import { useUser } from '../lib/customHooks';
 import axios from 'axios'
@@ -5,6 +6,8 @@ import { API_ROUTES } from '../utils/constants';
 import { getTokenFromLocalStorage } from '../lib/common';
 import FormData from 'form-data'
 import Form from './Form'
+import '../../src/index.css'
+import SearcIcon from '../search.svg'
 
 const TableHeader = () => {
   return(
@@ -17,7 +20,6 @@ const TableHeader = () => {
       </thead>
   )
 }
-
 const TableBody = ({contactData, editContact}) => {
   const [tableState, setTableState] = useState('')
   const initialState = {
@@ -61,11 +63,29 @@ const TableBody = ({contactData, editContact}) => {
   })}</tbody>
   
 }
-
+const SearchBar = ({search, searchTerm, setSearchTerm}) => {
+  return(
+    <div className="search">
+        <input
+         placeholder="Search for contact"
+         value={searchTerm}
+         onChange={(e) => setSearchTerm(e.target.value)}
+         />
+         <img 
+         src={SearcIcon}
+         alt="search"
+         onClick={() => search(searchTerm)}
+         />
+    </div>
+)
+}
 
 const Contacts = () => {
     const [data, setData] = useState([])
     const {user, authenticated} = useUser();
+    const [contact, setContact] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('')
+
     const token = getTokenFromLocalStorage();
     
     const getData =  () => {
@@ -135,7 +155,24 @@ const Contacts = () => {
         console.log(error);
       }); 
     }
-
+    const search = (name) => {
+      const  config = {
+        method: 'GET',
+        url: API_ROUTES.SEARCH_CONTACT + name,
+        headers: { 
+            Authorization: `Bearer ${token}`
+        },
+      };
+      axios(config)
+      .then(function (response) {
+        setContact([response.data])
+        console.log(response.data.name)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      
+    }
     React.useEffect(() => {getData()},[])
     if(!user || !authenticated){
         return (
@@ -145,12 +182,12 @@ const Contacts = () => {
             </div>
         )
     }
-
     return (
       <React.Fragment>
+        <SearchBar search={search} searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
         <table>
           <TableHeader/>
-          <TableBody contactData={data} editContact={editContact}/>
+          <TableBody contactData={contact.length > 0 ? contact : data} editContact={editContact}/>
         </table>
           <Form handleSubmit={handleSubmit}/>
       </React.Fragment>
