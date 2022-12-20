@@ -28,7 +28,7 @@ const Register = () => {
         console.log('Something went wrong during signing up: ', response);
         return;
       }
-      navigate(APP_ROUTES.SIGN_IN);
+      navigate(APP_ROUTES.LOGIN);
     }
     catch (err) {
       console.log('Some error occured during signing up: ', err);

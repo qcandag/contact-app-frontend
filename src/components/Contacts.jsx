@@ -8,6 +8,7 @@ import FormData from 'form-data'
 import Form from './Form'
 import '../../src/index.css'
 import SearcIcon from '../search.svg'
+// import { useNavigate } from 'react-router-dom';
 
 const TableHeader = () => {
   return(
@@ -81,11 +82,16 @@ const SearchBar = ({search, searchTerm, setSearchTerm}) => {
 }
 
 const Contacts = () => {
+    // const navigate = useNavigate()
     const [data, setData] = useState([])
     const {user, authenticated} = useUser();
     const [contact, setContact] = useState([]);
     const [searchTerm, setSearchTerm] = useState('')
-
+    // axios.interceptors.response.use((response) => {
+    //   return response;
+    // }, (error) => {
+    //   navigate(API_ROUTES.SIGN_IN);
+    // })
     const token = getTokenFromLocalStorage();
     
     const getData =  () => {

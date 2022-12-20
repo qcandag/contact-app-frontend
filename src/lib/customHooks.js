@@ -12,7 +12,7 @@ export function useUser() {
     async function getUserDetails() {
       const { authenticated, user } = await getAuthenticatedUser();
       if (!authenticated) {
-        navigate(APP_ROUTES.SIGN_IN);
+        navigate(APP_ROUTES.LOGIN);
         return;
       }
       setUser(user);
